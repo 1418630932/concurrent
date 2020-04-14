@@ -26,13 +26,11 @@ public class MyAtomicInteger {
         this.value = initValue;
     }
     public void add(int add){
-        while (true){
             int prev = value;
             int post = value+add;
-            if (unsafe.compareAndSwapInt(this, valueOffset,prev , post)){
-                break;
+            if(!unsafe.compareAndSwapInt(this, valueOffset,prev , post)){
+                System.out.println(false);
             }
-        }
     }
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
@@ -40,7 +38,7 @@ public class MyAtomicInteger {
         for (int i = 0; i <1000 ; i++) {
             new Thread(()->{myAtomicInteger.add(1);}).start();
         }
-        Sleeper.sleep(1);//等一秒
+        Sleeper.sleep(3);//等3秒
         System.out.println(myAtomicInteger.value);
     }
 }
